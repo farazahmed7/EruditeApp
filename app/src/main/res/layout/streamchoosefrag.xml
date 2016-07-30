@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              android:layout_width="match_parent"
+              android:layout_height="match_parent"
+                android:background="@drawable/bg"
+    android:orientation="vertical">
+
+    <Button
+      style="@style/Widget.AppCompat.Button.Colored"
+        android:layout_width="match_parent"
+        android:layout_height="70dp"
+        android:id="@+id/Cs"
+        android:layout_centerVertical="true"
+        android:text="B.Tech CS"
+        android:textSize="30sp"
+       />
+
+    <Button
+        style="@style/Widget.AppCompat.Button.Colored"
+        android:layout_width="match_parent"
+        android:layout_height="70dp"
+        android:id="@+id/Ece"
+        android:layout_below="@+id/Cs"
+        android:text="B.tech ECE"
+        android:textSize="30sp"/>
+
+
+</RelativeLayout>
