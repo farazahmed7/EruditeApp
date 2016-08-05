@@ -7,6 +7,9 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.TextView;
+
+import org.w3c.dom.Text;
 
 /**
  * Created by abc on 7/30/2016.
@@ -33,6 +36,7 @@ public class StreamChooseFragment extends Fragment {
     {
         View view=inflater.inflate(R.layout.streamchoosefrag,container,false);
         cs=(Button)view.findViewById(R.id.Cs);
+
         cs.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

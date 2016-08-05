@@ -1,14 +1,20 @@
 package com.faraz.android.nerdify;
 
+import android.app.DownloadManager;
+import android.content.Context;
+import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.os.Environment;
 import android.support.v4.app.Fragment;
+import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import org.apache.http.HttpResponse;
@@ -34,6 +40,8 @@ public class SubjectChooseFragment extends Fragment {
     private TextView mTextView;
     RecyclerView mRecyclerView;
     JSONArray jsonArray;
+    DownloadManager mDownloadManager;
+    Uri uri;
 
 
     @Override
@@ -42,10 +50,11 @@ public class SubjectChooseFragment extends Fragment {
         View view=inflater.inflate(R.layout.subjectchoosefrag,container,false);
 
 
-
+        mDownloadManager=(DownloadManager)getActivity().getSystemService(Context.DOWNLOAD_SERVICE);
         mRecyclerView=(RecyclerView)view.findViewById(R.id.recycler2);
 
-        mRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
+
+        mRecyclerView.setLayoutManager(new GridLayoutManager(getActivity(),2));
         new Semester().execute();
         return view;
 
@@ -90,12 +99,48 @@ public class SubjectChooseFragment extends Fragment {
         }
     }
 
-    class ViewHolder extends RecyclerView.ViewHolder
+    class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener
     {
         TextView mTitleTextView;
+        RelativeLayout rl;
+        int position;
         public ViewHolder(View itemView) {
             super(itemView);
-            mTitleTextView = (TextView) itemView;
+            mTitleTextView = (TextView) itemView.findViewById(R.id.subjectlistitem);
+            rl=(RelativeLayout)itemView.findViewById(R.id.rl);
+            rl.setOnClickListener(this);
+
+        }
+
+        public void action(int pos,String text)
+        {
+            position=pos;
+
+          mTitleTextView.setText(text);
+            if(position==0)
+               rl.setBackgroundColor(getResources().getColor(R.color.red));
+            else if(position==1)
+               rl.setBackgroundColor(getResources().getColor(R.color.orange));
+            else if(position==2)
+               rl.setBackgroundColor(getResources().getColor(R.color.purple));
+            else if (position==3)
+                rl.setBackgroundColor(getResources().getColor(R.color.purpledark));
+            else if (position==4)
+               rl.setBackgroundColor(getResources().getColor(R.color.green));
+            else if (position==5)
+                rl.setBackgroundColor(getResources().getColor(R.color.grey));
+
+
+        }
+        @Override
+        public void onClick(View v) {
+
+
+            if ((position==1)) {
+                DownloadManager.Request request = new DownloadManager.Request(Uri.parse("http://thinkdiff.co.in/erudite/upload_erudite/JH_SEM1/chem.pdf"));
+                request.setDestinationInExternalFilesDir(getActivity(), Environment.DIRECTORY_DOWNLOADS, "chem.pdf");
+                long download_id = mDownloadManager.enqueue(request);
+            }
 
         }
     }
@@ -107,7 +152,7 @@ public class SubjectChooseFragment extends Fragment {
         @Override
         public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
             LayoutInflater inflater=LayoutInflater.from(getActivity());
-            View v=inflater.inflate(android.R.layout.simple_list_item_1,parent,false);
+            View v=inflater.inflate(R.layout.subjectslistlayout,parent,false);
             return new ViewHolder(v);
         }
 
@@ -121,7 +166,10 @@ public class SubjectChooseFragment extends Fragment {
             } catch (JSONException e) {
                 e.printStackTrace();
             }
-            holder.mTitleTextView.setText(text);
+            holder.action(position,text);
+
+
+
 
 
         }

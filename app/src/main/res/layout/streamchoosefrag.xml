@@ -8,8 +8,9 @@
     <Button
       style="@style/Widget.AppCompat.Button.Colored"
         android:layout_width="match_parent"
-        android:layout_height="70dp"
+        android:layout_height="100dp"
         android:id="@+id/Cs"
+      android:background="#616161"
         android:layout_centerVertical="true"
         android:text="B.Tech CS"
         android:textSize="30sp"
@@ -18,9 +19,11 @@
     <Button
         style="@style/Widget.AppCompat.Button.Colored"
         android:layout_width="match_parent"
-        android:layout_height="70dp"
+        android:layout_height="100dp"
+        android:layout_marginTop="@dimen/activity_horizontal_margin"
         android:id="@+id/Ece"
         android:layout_below="@+id/Cs"
+        android:background="#616161"
         android:text="B.tech ECE"
         android:textSize="30sp"/>
 

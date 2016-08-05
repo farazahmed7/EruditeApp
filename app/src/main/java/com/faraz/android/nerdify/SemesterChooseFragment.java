@@ -40,6 +40,8 @@ public class SemesterChooseFragment  extends Fragment {
     RecyclerView mRecyclerView;
     JSONArray  jsonArray;
     private Callbacks mCallbacks;
+    private TextView loadingText;
+
 
     public interface Callbacks
     {
@@ -62,6 +64,15 @@ public class SemesterChooseFragment  extends Fragment {
         stremaName = getArguments().getString("data");
 
         mRecyclerView=(RecyclerView)view.findViewById(R.id.recycler);
+        loadingText=(TextView)view.findViewById(R.id.loading);
+
+        loadingText.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (loadingText.getText().toString()=="Not connected to internet")
+                    new Semester().execute();
+            }
+        });
 
         mRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
         new Semester().execute();
@@ -69,11 +80,12 @@ public class SemesterChooseFragment  extends Fragment {
 
     }
 
-    class Semester extends AsyncTask<Void,Void,Void>
+    class Semester extends AsyncTask<Void,Integer,Void>
     {
 
         @Override
         protected Void doInBackground(Void... params) {
+            publishProgress(0);
             HttpClient httpClient=new DefaultHttpClient();
             HttpPost httpPost=new HttpPost("http://farazahmed8.pythonanywhere.com/api/");
 
@@ -87,16 +99,29 @@ public class SemesterChooseFragment  extends Fragment {
                 String json = EntityUtils.toString(response.getEntity());
                 Log.d("status", response.getStatusLine() + "");
 
+
                 jsonArray=new JSONArray(json);
+                publishProgress(1);
 
                 Log.d("response",json);
 
 
             } catch (Exception e) {
-                e.printStackTrace();
+                publishProgress(21);
             }
 
             return null;
+        }
+
+        @Override
+        protected void onProgressUpdate(Integer... v) {
+            super.onProgressUpdate(v);
+            if (v[0]==0)
+            loadingText.setText("Loading semesters");
+            else if(v[0]==1)
+                loadingText.setVisibility(View.GONE);
+            else
+                loadingText.setText("Not connected to internet");
         }
 
         @Override
@@ -114,7 +139,7 @@ public class SemesterChooseFragment  extends Fragment {
         int pos;
         public ViewHolder(View itemView) {
             super(itemView);
-            mTitleTextView = (TextView) itemView;
+            mTitleTextView=(TextView)itemView.findViewById(R.id.listitem);
             mTitleTextView.setOnClickListener(this);
 
         }
@@ -138,7 +163,7 @@ public class SemesterChooseFragment  extends Fragment {
         @Override
         public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
             LayoutInflater inflater=LayoutInflater.from(getActivity());
-            View v=inflater.inflate(android.R.layout.simple_list_item_1,parent,false);
+            View v=inflater.inflate(R.layout.listlayout,parent,false);
             return new ViewHolder(v);
         }
 
@@ -163,6 +188,21 @@ public class SemesterChooseFragment  extends Fragment {
             return jsonArray.length();
             else return 0;
         }
+    }
+
+    @Override
+    public void onDestroy()
+    {
+        super.onDestroy();
+        Log.d("destroyed","onDestroy");
+    }
+
+    @Override
+    public void onResume()
+    {
+        super.onResume();
+        Log.d("resume", "onResume");
+
     }
 
 }
